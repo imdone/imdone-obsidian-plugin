@@ -1,112 +1,45 @@
-import { App, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, Plugin, FileSystemAdapter, PluginManifest, Workspace } from 'obsidian'
+import { join } from 'path'
 
-interface MyPluginSettings {
-	mySetting: string;
-}
+export default class ImdonePlugin extends Plugin {
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
+	workspace: Workspace;
+	adapter: FileSystemAdapter;
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+	constructor(app: App, pluginManifest: PluginManifest) {
+    super(app, pluginManifest);
+		this.app = app;
+		this.workspace = app.workspace;
+		this.adapter = app.vault.adapter as FileSystemAdapter;
+	}
 
 	async onload() {
-		console.log('loading plugin');
+		console.log('loading imdone plugin');
 
-		await this.loadSettings();
-
-		this.addRibbonIcon('dice', 'Sample Plugin', () => {
-			new Notice('This is a notice!');
+		this.registerMarkdownPostProcessor((el) => {
+			const links = this.getImdoneCardLinks(el)
+			// TODO:10 only change href if file is in imdone project
+			links.forEach((link, i) => link.href = `imdone://${this.getActiveFilePath()}?index=${i}`)
+			// TODO:0 Test without imdone running
 		});
-
-		this.addStatusBarItem().setText('Status Bar Text');
-
-		this.addCommand({
-			id: 'open-sample-modal',
-			name: 'Open Sample Modal',
-			// callback: () => {
-			// 	console.log('Simple Callback');
-			// },
-			checkCallback: (checking: boolean) => {
-				let leaf = this.app.workspace.activeLeaf;
-				if (leaf) {
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-					return true;
-				}
-				return false;
-			}
-		});
-
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		this.registerCodeMirror((cm: CodeMirror.Editor) => {
-			console.log('codemirror', cm);
-		});
-
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
-
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 	}
 
 	onunload() {
-		console.log('unloading plugin');
+		console.log('unloading imdone plugin');
 	}
 
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+	isImdoneCardLink(el: HTMLAnchorElement): Boolean {
+		return el && /#([a-zA-Z-_]+?)(:)(-?[\d.]+(?:e-?\d+)?)?/.test(el.hash)
 	}
 
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
+	getImdoneCardLinks(el: HTMLElement): Array<HTMLAnchorElement> {
+		const links = Array.from(el.querySelectorAll('.external-link')) as Array<HTMLAnchorElement> 
+		return links.filter(this.isImdoneCardLink)
 	}
 
-	onOpen() {
-		let {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		let {contentEl} = this;
-		contentEl.empty();
-	}
-}
-
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		let {containerEl} = this;
-
-		containerEl.empty();
-
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
-
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue('')
-				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
+	getActiveFilePath(): String {
+		const path = this.workspace.getActiveFile().path;
+		const basePath = this.adapter.getBasePath()
+		return join(basePath, path)
 	}
 }

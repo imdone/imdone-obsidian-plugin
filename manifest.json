@@ -1,10 +1,10 @@
 {
-	"id": "obsidian-sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.1",
-	"minAppVersion": "0.9.12",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md/about",
-	"isDesktopOnly": false
+	"id": "imdone-obsidian-plugin",
+	"name": "Imdone Obsidian Plugin",
+	"version": "1.0.0",
+	"minAppVersion": "0.11.0",
+	"description": "This plugin allows imdone users to open their imdone board from a document in their obsidian vault that contains imdone cards.",
+	"author": "Imdone",
+	"authorUrl": "https://imdone.io",
+	"isDesktopOnly": true
 }
