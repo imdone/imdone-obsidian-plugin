@@ -1,5 +1,6 @@
 import { App, Plugin, FileSystemAdapter, PluginManifest, Workspace } from 'obsidian'
-import { join } from 'path'
+import { join, dirname, sep } from 'path'
+import { existsSync } from 'fs'
 
 export default class ImdonePlugin extends Plugin {
 
@@ -13,14 +14,16 @@ export default class ImdonePlugin extends Plugin {
 		this.adapter = app.vault.adapter as FileSystemAdapter;
 	}
 
+	// TODO:0 Test without imdone running
 	async onload() {
 		console.log('loading imdone plugin');
 
-		this.registerMarkdownPostProcessor((el) => {
+		this.registerMarkdownPostProcessor(async (el) => {
+			const activeFilePath = this.getActiveFilePath()
 			const links = this.getImdoneCardLinks(el)
-			// TODO:10 only change href if file is in imdone project
-			links.forEach((link, i) => link.href = `imdone://${this.getActiveFilePath()}?index=${i}`)
-			// TODO:0 Test without imdone running
+			if (await this.isImdoneProject()) {
+				links.forEach((link, i) => link.href = `imdone://${activeFilePath}?index=${i}`)
+			}
 		});
 	}
 
@@ -37,9 +40,29 @@ export default class ImdonePlugin extends Plugin {
 		return links.filter(this.isImdoneCardLink)
 	}
 
-	getActiveFilePath(): String {
+	getActiveFilePath() {
 		const path = this.workspace.getActiveFile().path;
-		const basePath = this.adapter.getBasePath()
+		const basePath = this.getVaultPath()
 		return join(basePath, path)
+	}
+
+	getActiveFileDir() {
+		return join(this.getVaultPath(), dirname(this.workspace.getActiveFile().path))
+	}
+
+	getVaultPath() {
+		return this.adapter.getBasePath()
+	}
+
+	async isImdoneProject() {
+		let cwd = this.getActiveFileDir()
+		while(true) {
+			const imdonePath = join(cwd, '.imdone')
+			if (existsSync(imdonePath)) return true
+			const dirNames = cwd.split(sep)
+			dirNames.pop()
+			cwd = dirNames.join(sep)
+			if (cwd === '') return false
+		}
 	}
 }

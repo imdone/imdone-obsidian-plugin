@@ -27,20 +27,19 @@ lists:
   - hidden: false
     ignore: true
     name: DONE
-  - filter: 'completedDate > "${14 days ago}" -completed'
+  - filter: 'completedDate > "${7 days ago}" -completed'
     hidden: false
     id: 1
     name: Recently Completed
 settings:
   journalType: Folder
-  journalPath: content
+  journalPath: imdone-obsidian-plugin-notes
   taskPrefix: '#'
   maxLines: 6
   addNewCardsToTop: true
   newCardSyntax: MARKDOWN
   openIn: code
-  customOpenIn: !<tag:yaml.org,2002:js/undefined> ''
-  replaceSpacesWith: '-'
+  editorTheme: blackboard
   cards:
     colors: []
     computed:
@@ -91,10 +90,14 @@ settings:
       <!--
       created:${(new Date()).toISOString()}
       -->
-  doneList: DONE
   filteredLists:
     - filter: 'dueDate < "${tomorrow at 6AM}" AND list != DONE +dueDate +order'
       name: What's Due?
     - filter: 'completedDate > "${7 days ago}" -completed'
       name: Recently Completed
+  replaceSpacesWith: '-'
   journalTemplate: null
+  appendNewCardsTo: my-journal.md
+  theme: dark
+  useVimKeyBindings: false
+  doneList: DONE
