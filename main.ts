@@ -48,7 +48,7 @@ export default class ImdonePlugin extends Plugin {
 		const links = this.getImdoneCardLinks(el)
 		links.forEach((link) => {
 			const { text, hash } = link
-			link.href = encodeURI(`imdone://${activeFilePath}?text=${text}&hash=${hash}`)
+			link.href = `imdone://${activeFilePath}?text=${encodeURIComponent(text)}&hash=${encodeURIComponent(hash)}&type=MARKDOWN`
 		})
 	}
 
@@ -76,7 +76,7 @@ export default class ImdonePlugin extends Plugin {
 			const imdoneLink = document.createElement('a')
 			const imdoneLinkText = text.replace(hash, '')
 			imdoneLink.setText(text.replace(tag, ''))
-			imdoneLink.href = encodeURI(`imdone://${activeFilePath}?text=${imdoneLinkText}&hash=${hash}`)
+			imdoneLink.href = `imdone://${activeFilePath}?text=${encodeURIComponent(imdoneLinkText)}&hash=${encodeURIComponent(hash)}&type=HASHTAG`
 			imdoneLink.addClass('external-link')
 			parent.append(imdoneLink)
 		})
