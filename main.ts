@@ -1,6 +1,6 @@
 import { App, Plugin, FileSystemAdapter, PluginManifest, Workspace } from 'obsidian'
 import { join, dirname, sep } from 'path'
-import { existsSync } from 'fs'
+import { stat } from 'fs'
 
 export default class ImdonePlugin extends Plugin {
 
@@ -18,10 +18,10 @@ export default class ImdonePlugin extends Plugin {
 	async onload() {
 		console.log('loading imdone plugin');
 
-		this.registerMarkdownPostProcessor(async (el) => {
+		this.registerMarkdownPostProcessor((el) => {
 			const activeFilePath = this.getActiveFilePath()
 			const links = this.getImdoneCardLinks(el)
-			if (await this.isImdoneProject()) {
+			if (this.isImdoneProject()) {
 				links.forEach((link, i) => link.href = `imdone://${activeFilePath}?index=${i}`)
 			}
 		});
@@ -58,11 +58,19 @@ export default class ImdonePlugin extends Plugin {
 		let cwd = this.getActiveFileDir()
 		while(true) {
 			const imdonePath = join(cwd, '.imdone')
-			if (existsSync(imdonePath)) return true
+			if (await this.exists(imdonePath)) return true
 			const dirNames = cwd.split(sep)
 			dirNames.pop()
 			cwd = dirNames.join(sep)
 			if (cwd === '') return false
 		}
+	}
+
+	async exists(_path: string) {
+		return new Promise((resolve) => {
+			stat(_path, (err, stats) => {
+				resolve(!err && stats && stats.isDirectory())
+			})
+		})
 	}
 }
