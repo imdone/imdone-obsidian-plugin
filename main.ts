@@ -18,10 +18,10 @@ export default class ImdonePlugin extends Plugin {
 	async onload() {
 		console.log('loading imdone plugin');
 
-		this.registerMarkdownPostProcessor((el) => {
+		this.registerMarkdownPostProcessor(async (el) => {
 			const activeFilePath = this.getActiveFilePath()
 			const links = this.getImdoneCardLinks(el)
-			if (this.isImdoneProject()) {
+			if (await this.isImdoneProject()) {
 				links.forEach((link, i) => link.href = `imdone://${activeFilePath}?index=${i}`)
 			}
 		});
