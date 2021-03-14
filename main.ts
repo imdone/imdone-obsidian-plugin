@@ -18,7 +18,6 @@ export default class ImdonePlugin extends Plugin {
 	// TODO:0 Test without imdone running
 	async onload() {
 		console.log('loading imdone plugin');
-
 		this.registerMarkdownPostProcessor(el => this.markdownPostProcessor(el));
 	}
 
@@ -27,8 +26,7 @@ export default class ImdonePlugin extends Plugin {
 	}
 
 	async markdownPostProcessor(el: HTMLElement) {
-		const imdoneConfigPath = await this.getImdoneConfigPath()
-		if (imdoneConfigPath) {
+		if (await this.getImdoneConfigPath()) {
 			this.updateCardLinksHref(el)
 			this.makeCardHashtagsLinks(el)
 		}
@@ -44,11 +42,10 @@ export default class ImdonePlugin extends Plugin {
 	}
 
 	updateCardLinksHref(el: HTMLElement) {
-		const activeFilePath = this.getActiveFilePath()
 		const links = this.getImdoneCardLinks(el)
 		links.forEach((link) => {
 			const { text, hash } = link
-			link.href = `imdone://${activeFilePath}?text=${encodeURIComponent(text)}&hash=${encodeURIComponent(hash)}&type=MARKDOWN`
+			link.href = this.getImdoneURL(text, hash, 'MARKDOWN')
 		})
 	}
 
@@ -62,7 +59,6 @@ export default class ImdonePlugin extends Plugin {
 	}
 
 	makeCardHashtagsLinks(el: HTMLElement) {
-		const activeFilePath = this.getActiveFilePath()
 		this.getImdoneCardHashtags(el).forEach(el => {
 			const parent = el.parentElement
 			const tag = el.innerText
@@ -76,10 +72,15 @@ export default class ImdonePlugin extends Plugin {
 			const imdoneLink = document.createElement('a')
 			const imdoneLinkText = text.replace(hash, '')
 			imdoneLink.setText(text.replace(tag, ''))
-			imdoneLink.href = `imdone://${activeFilePath}?text=${encodeURIComponent(imdoneLinkText)}&hash=${encodeURIComponent(hash)}&type=HASHTAG`
+			imdoneLink.href =  this.getImdoneURL(imdoneLinkText, hash, 'HASHTAG')
 			imdoneLink.addClass('external-link')
 			parent.append(imdoneLink)
 		})
+	}
+
+	getImdoneURL(text: string, hash:string , type:string) {
+		const path = this.getActiveFilePath()
+		return `imdone://${path}?text=${encodeURIComponent(text)}&hash=${encodeURIComponent(hash)}&type=${type}`
 	}
 
 	getActiveFilePath() {
