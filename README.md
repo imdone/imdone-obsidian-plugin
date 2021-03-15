@@ -10,7 +10,7 @@ This plugin will turn all your imdone cards into imdone links in obsidian. Click
 Works with imdone 1.14.0 and later.
 
 <!-- 
-## #TODO:0 Add a URL handler to open the obsidian editor to a specific line number
+## #TODO:10 Add a URL handler to open the obsidian editor to a specific line number
 <card>
 
 +feature
