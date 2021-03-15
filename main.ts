@@ -15,7 +15,6 @@ export default class ImdonePlugin extends Plugin {
 		this.adapter = app.vault.adapter as FileSystemAdapter;
 	}
 
-	// TODO:0 Test without imdone running
 	async onload() {
 		console.log('loading imdone plugin');
 		this.registerMarkdownPostProcessor(el => this.markdownPostProcessor(el));

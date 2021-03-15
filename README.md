@@ -1,4 +1,23 @@
-## Obsidian Sample Plugin
+Imdone Obsidian Plugin
+====
+
+**Coming Soon**
+
+[Imdone](https://imdone.io) is a simple and powerful kanban board that works on top of a local folder of plain text markdown files or code.
+
+This plugin will turn all your imdone cards into imdone links in obsidian. Clicking on a link will open imdone to the card.
+
+Works with imdone 1.14.0 and later.
+
+<!-- 
+## #TODO:0 Add a URL handler to open the obsidian editor to a specific line number
+<card>
+
++feature
+</card>
+-->
+
+<!-- ## Obsidian Sample Plugin
 
 This is a sample plugin for Obsidian (https://obsidian.md).
 
@@ -52,4 +71,4 @@ Quick starting guide for new plugin devs:
 
 ### API Documentation
 
-See https://github.com/obsidianmd/obsidian-api
+See https://github.com/obsidianmd/obsidian-api -->
