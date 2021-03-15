@@ -80,7 +80,7 @@ export default class ImdonePlugin extends Plugin {
 
 	getImdoneURL(text: string, hash:string , type:string) {
 		const path = this.getActiveFilePath()
-		return `imdone://${path}?text=${encodeURIComponent(text)}&hash=${encodeURIComponent(hash)}&type=${type}`
+		return `imdone://${path}?text=${encodeURIComponent(text.trim())}&hash=${encodeURIComponent(hash)}&type=${type}`
 	}
 
 	getActiveFilePath() {
