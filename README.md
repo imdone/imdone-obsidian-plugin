@@ -1,19 +1,19 @@
 Imdone Obsidian Plugin
 ====
 
-**Coming Soon**
-
 [Imdone](https://imdone.io) is a simple and powerful kanban board that works on top of a local folder of plain text markdown files or code.
 
 This plugin will turn all your imdone cards into imdone links in obsidian. Clicking on a link will open imdone to the card.
 
+Imdone will open obsidian to the card source in edit mode if **Open obsidian at card source line** is switched on in your board settings.
+
 Works with imdone 1.14.0 and later.
 
 <!-- 
-## #TODO:10 Add a URL handler to open the obsidian editor to a specific line number
+## #DONE:0 Add a URL handler to open the obsidian editor to a specific line number
 <card>
 
-+feature
++feature completed:2021-03-16T13:34:23.159Z
 </card>
 -->
 
