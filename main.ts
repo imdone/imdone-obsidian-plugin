@@ -22,7 +22,7 @@ export default class ImdonePlugin extends Plugin {
 
 		this.registerObsidianProtocolHandler(this.actionName, (params: ObsidianProtocolData) => {
 			if (params.action == this.actionName && params.file) {
-				const file = params.file.substring(1)
+				const file = params.file.substring(1).replace('\\', '/')
 				this.app.workspace.openLinkText('', file).then(() => {
 					var cmEditor = this.getEditor();
 					if (params.line) {
