@@ -23,7 +23,7 @@ export default class ImdonePlugin extends Plugin {
 
 		this.registerObsidianProtocolHandler(actionName, (params: ObsidianProtocolData) => {
 			if (params.action == actionName && params.file) {
-				const file = params.file.substring(1).replace('\\', '/')
+				const file = params.file.substring(1).replace(/\\/g, '/')
 				this.app.workspace.openLinkText('', file).then(() => {
 					const cmEditor = this.getEditor();
 					if (!cmEditor) return;
@@ -104,7 +104,7 @@ export default class ImdonePlugin extends Plugin {
 	}
 
 	getImdoneURL(text: string, hash:string , type:'MARKDOWN' | 'HASHTAG') {
-		const path = this.getActiveFilePath().replace('\\', '/');
+		const path = this.getActiveFilePath().replace(/\\/g, '/');
 		return `imdone://${path}?text=${encodeURIComponent(text.trim())}&hash=${encodeURIComponent(hash)}&type=${type}`;
 	}
 
