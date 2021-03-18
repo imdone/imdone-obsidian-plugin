@@ -41,13 +41,10 @@ export default class ImdonePlugin extends Plugin {
 	}
 
 	getEditor() {
-		const view = this.app.workspace.activeLeaf.view;
-		if (view.getViewType() == 'markdown') {
-			const markdownView = view as MarkdownView;
-			const cmEditor = markdownView.sourceMode.cmEditor;
-			return cmEditor;
-		}
-		return null;
+		const markdownView = this.workspace.getActiveViewOfType(MarkdownView);
+		if (!markdownView) return;
+		const cmEditor = markdownView.sourceMode.cmEditor;
+		return cmEditor;
 	}
 
 	async markdownPostProcessor(el: HTMLElement) {
@@ -110,8 +107,7 @@ export default class ImdonePlugin extends Plugin {
 
 	getActiveFilePath() {
 		const path = this.workspace.getActiveFile().path;
-		const basePath = this.getVaultPath();
-		return join(basePath, path);
+		return this.adapter.getFullPath(path);
 	}
 
 	getActiveFileDir() {
