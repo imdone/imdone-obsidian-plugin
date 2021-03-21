@@ -31,11 +31,12 @@ export default class ImdonePlugin extends Plugin {
 		this.registerObsidianProtocolHandler(actionName, (params: ObsidianProtocolData) => {
 			if (params.action == actionName && params.file) {
 				const file = params.file.substring(1).replace(/\\/g, '/')
-				this.workspace.openLinkText('', file).then(() => {
+				this.workspace.openLinkText(file, '', false, {state: {mode:'source'}}).then(() => {
 					const cmEditor = this.getEditor();
 					if (!cmEditor) return;
 					if (params.line) {
 						cmEditor.setCursor(parseInt(params.line, 10), 0);
+						cmEditor.scrollIntoView(null, 200);
 					}
 					cmEditor.focus();
 				});
@@ -50,8 +51,6 @@ export default class ImdonePlugin extends Plugin {
 	getEditor() {
 		const markdownView = this.workspace.getActiveViewOfType(MarkdownView);
 		if (!markdownView) return;
-		const sourceMode: any = markdownView.sourceMode;
-		sourceMode.show();
 		const cmEditor = markdownView.sourceMode.cmEditor;
 		return cmEditor;
 	}
@@ -112,7 +111,7 @@ export default class ImdonePlugin extends Plugin {
 
 	getImdoneURL(text: string, hash:string , type:'MARKDOWN' | 'HASHTAG') {
 		const path = this.getActiveFilePath().replace(/\\/g, '/');
-		return `imdone://${path}?text=${encodeURIComponent(text.trim())}&hash=${encodeURIComponent(hash)}&type=${type}`;
+		return `imdone://${encodeURI(path)}?text=${encodeURIComponent(text.trim())}&hash=${encodeURIComponent(hash)}&type=${type}`;
 	}
 
 	getActiveFilePath() {
