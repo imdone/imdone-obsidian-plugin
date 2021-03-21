@@ -1,6 +1,7 @@
 import { App, Plugin, FileSystemAdapter, PluginManifest, Workspace, MarkdownView, ObsidianProtocolData } from 'obsidian'
 import { join, dirname, sep } from 'path'
-import { stat } from 'fs'
+import { dir } from 'find'
+import { promises } from 'fs'
 
 const hashRegex =  /#([a-zA-Z-_]+?)(:)(-?[\d.]+(?:e-?\d+)?)?/;
 const actionName = 'open-to-line';
@@ -9,6 +10,8 @@ export default class ImdonePlugin extends Plugin {
 
 	workspace: Workspace;
 	adapter: FileSystemAdapter;
+	imdonePaths: string[];
+	inImdoneProject: boolean;
 
 	constructor(app: App, pluginManifest: PluginManifest) {
     super(app, pluginManifest);
@@ -19,12 +22,16 @@ export default class ImdonePlugin extends Plugin {
 
 	async onload() {
 		console.log('loading imdone plugin');
-		this.registerMarkdownPostProcessor(el => this.markdownPostProcessor(el));
+
+		this.imdonePaths = await this.getImdoneProjectPaths();
+		this.inImdoneProject = await this.isVaultInImdoneProject();
+
+		this.registerMarkdownPostProcessor((el, ctx) => this.markdownPostProcessor(el, ctx));
 
 		this.registerObsidianProtocolHandler(actionName, (params: ObsidianProtocolData) => {
 			if (params.action == actionName && params.file) {
 				const file = params.file.substring(1).replace(/\\/g, '/')
-				this.app.workspace.openLinkText('', file).then(() => {
+				this.workspace.openLinkText('', file).then(() => {
 					const cmEditor = this.getEditor();
 					if (!cmEditor) return;
 					if (params.line) {
@@ -43,12 +50,15 @@ export default class ImdonePlugin extends Plugin {
 	getEditor() {
 		const markdownView = this.workspace.getActiveViewOfType(MarkdownView);
 		if (!markdownView) return;
+		const sourceMode: any = markdownView.sourceMode;
+		sourceMode.show();
 		const cmEditor = markdownView.sourceMode.cmEditor;
 		return cmEditor;
 	}
 
-	async markdownPostProcessor(el: HTMLElement) {
-		if (await this.getImdoneConfigPath()) {
+	async markdownPostProcessor(el: HTMLElement, ctx: any) {
+		const sourceFilePath = join(this.getVaultPath(),ctx.sourcePath);
+		if (this.isFileInImdoneProject(sourceFilePath)) {
 			this.updateCardLinksHref(el);
 			this.makeCardHashtagsLinks(el);
 		}
@@ -118,11 +128,11 @@ export default class ImdonePlugin extends Plugin {
 		return this.adapter.getBasePath();
 	}
 
-	async getImdoneConfigPath() {
-		let cwd = this.getActiveFileDir();
+	async isVaultInImdoneProject() {
+		let cwd = this.getVaultPath();
 		while(true) {
 			const imdonePath = join(cwd, '.imdone');
-			if (await this.exists(imdonePath)) return imdonePath;
+			if (await this.exists(imdonePath)) return !!imdonePath;
 			const dirNames = cwd.split(sep);
 			dirNames.pop();
 			cwd = dirNames.join(sep);
@@ -130,11 +140,27 @@ export default class ImdonePlugin extends Plugin {
 		}
 	}
 
-	async exists(_path: string) {
-		return new Promise((resolve) => {
-			stat(_path, (err, stats) => {
-				resolve(!err && stats && stats.isDirectory());
-			});
+	isFileInImdoneProject(file: string) {
+		return this.inImdoneProject || this.imdonePaths.find(_path => {
+			return file.startsWith(_path);
 		});
+	}
+
+	async getImdoneProjectPaths():Promise<string[]> {
+		const cwd = this.getVaultPath();
+		return new Promise((resolve, reject) => {
+			dir(/\.imdone$/, cwd, dirs => {
+				resolve(dirs.map(dir => dir.replace(/\.imdone$/, '')));
+			}).error(reject);
+		});
+	}
+
+	async exists(_path: string):Promise<boolean> {
+		try {
+			const stats = await promises.stat(_path);
+			return stats && stats.isDirectory();
+		} catch {
+			return false;
+		}
 	}
 }

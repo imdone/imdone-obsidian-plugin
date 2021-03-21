@@ -10,7 +10,18 @@ Imdone will open obsidian to the card source in edit mode if **Open obsidian at 
 Works with imdone 1.14.0 and later.
 
 <!-- 
-## #DONE:0 Add a URL handler to open the obsidian editor to a specific line number
+# [Resources](#NOTE:10)
+<card>
+- [Open in finder](/)
+- [imdone/imdone-obsidian-plugin](https://github.com/imdone/imdone-obsidian-plugin)
+- [obsidianmd/obsidian-sample-plugin](https://github.com/obsidianmd/obsidian-sample-plugin)
+
+<!--
+created:2021-03-15T13:25:07.843Z
+-->
+</card>
+
+## #DONE:5 Add a URL handler to open the obsidian editor to a specific line number
 <card>
 
 +feature completed:2021-03-16T13:34:23.159Z
