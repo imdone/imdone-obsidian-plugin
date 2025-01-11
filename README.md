@@ -21,11 +21,6 @@ created:2021-03-15T13:25:07.843Z
 -->
 </card>
 
-## #DONE:5 Add a URL handler to open the obsidian editor to a specific line number
-<card>
-
-+feature completed:2021-03-16T13:34:23.159Z
-</card>
 -->
 
 <!-- ## Obsidian Sample Plugin

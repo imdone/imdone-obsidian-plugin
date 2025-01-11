@@ -1,165 +1,198 @@
-import { App, Plugin, FileSystemAdapter, PluginManifest, Workspace, MarkdownView, ObsidianProtocolData } from 'obsidian'
-import { join, dirname, sep } from 'path'
-import { dir } from 'find'
-import { promises } from 'fs'
+import { Plugin, TFile, MarkdownView, EditorSuggest, EditorSuggestContext, App, EditorPosition, Editor, EditorSuggestTriggerInfo, PluginManifest } from "obsidian";
+import path from "path";
+// @ts-ignore
+import { getTasks } from "imdone-core/lib/usecases/get-tasks-in-file";
+// @ts-ignore
+import { getTags } from "imdone-core/lib/usecases/get-project-tags";
+// @ts-ignore
+import Task from "imdone-core/lib/task";
+import { loadForFilePath } from "imdone-core/lib/adapters/storage/config";
+// @ts-ignore
+import Config from "imdone-core/lib/config";
 
-const hashRegex =  /#([a-zA-Z-_]+?)(:)(-?[\d.]+(?:e-?\d+)?)?/;
-const actionName = 'open-to-line';
+export default class ImdoneCompanionPlugin extends Plugin {
+	tasks: any;
+	tagSuggester: ImdoneTagSuggester;
+	config: Config;
 
-export default class ImdonePlugin extends Plugin {
-
-	workspace: Workspace;
-	adapter: FileSystemAdapter;
-	imdonePaths: string[];
-	inImdoneProject: boolean;
-
-	constructor(app: App, pluginManifest: PluginManifest) {
-    super(app, pluginManifest);
-		this.app = app;
-		this.workspace = app.workspace;
-		this.adapter = app.vault.adapter as FileSystemAdapter;
+  constructor(app: App, manifest: PluginManifest) {
+    super(app, manifest);
+		// @ts-ignore
+		this.tasks = [];
 	}
 
-	async onload() {
-		console.log('loading imdone plugin');
+  async onload() {
+    console.log("Loading Imdone Companion Plugin");
 
-		this.imdonePaths = await this.getImdoneProjectPaths();
-		this.inImdoneProject = await this.isVaultInImdoneProject();
+		this.config = await loadForFilePath(this.app.vault.adapter.basePath);
+    this.addCommand({
+      id: "open-imdone-card",
+      name: "Open Imdone Card",
+			hotkeys: [
+        {
+            modifiers: ['Ctrl'],
+            key: 'I',
+        },
+    	],
+      checkCallback: (checking) => {
+        if (checking) return this.app.workspace.activeLeaf?.getViewState().type === "markdown";
+        this.openImdoneCard();
+      },
+    });
 
-		this.registerMarkdownPostProcessor((el, ctx) => this.markdownPostProcessor(el, ctx));
+    // Register event listeners
+    this.registerEvent(this.app.workspace.on("active-leaf-change", this.refreshTodoSections.bind(this)));
+    this.registerEvent(this.app.metadataCache.on("changed", this.refreshTodoSections.bind(this)));
+    // Register autocomplete provider for tags
+		this.tagSuggester = new ImdoneTagSuggester(this.app, this);
+		// Register the editor suggest at the front of the list to run before the default tag suggest
+		// @ts-ignore
+		this.app.workspace.editorSuggest.suggests.unshift(this.tagSuggester);
+  }
 
-		this.registerObsidianProtocolHandler(actionName, (params: ObsidianProtocolData) => {
-			if (params.action == actionName && params.file) {
-				const file = params.file.substring(1).replace(/\\/g, '/')
-				this.workspace.openLinkText(file, '', false, {state: {mode:'source'}}).then(() => {
-					const cmEditor = this.getEditor();
-					if (!cmEditor) return;
-					if (params.line) {
-						cmEditor.setCursor(parseInt(params.line, 10), 0);
-						cmEditor.scrollIntoView(null, 200);
-					}
-					cmEditor.focus();
-				});
+  onunload() {
+    console.log("Unloading Imdone Companion Plugin");
+		// @ts-ignore
+		this.register(() => this.app.workspace.editorSuggest.removeSuggest(this.tagSuggester));
+  }
+
+	getLineNumber() {
+		const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
+		if (!activeLeaf) return;
+
+		const cursor = activeLeaf.editor.getCursor();
+		return cursor.line + 1; // Convert 0-based to 1-based
+	}
+
+	isCursorInTask(line: number) {
+		const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
+		if (!activeLeaf) return false;
+
+		for (const task of this.tasks) {
+			const startLine = task.line;
+    	const endLine = task.lastLine;
+			if (line >= startLine && line <= endLine) {
+				return true;
 			}
-		});
-	}
-
-	onunload() {
-		console.log('unloading imdone plugin');
-	}
-
-	getEditor() {
-		const markdownView = this.workspace.getActiveViewOfType(MarkdownView);
-		if (!markdownView) return;
-		const cmEditor = markdownView.sourceMode.cmEditor;
-		return cmEditor;
-	}
-
-	async markdownPostProcessor(el: HTMLElement, ctx: any) {
-		const sourceFilePath = join(this.getVaultPath(),ctx.sourcePath);
-		if (this.isFileInImdoneProject(sourceFilePath)) {
-			this.updateCardLinksHref(el);
-			this.makeCardHashtagsLinks(el);
 		}
+
+		return false;
 	}
 
-	isImdoneCardLink(el: HTMLAnchorElement): Boolean {
-		return el && hashRegex.test(el.hash);
+  async refreshTodoSections() {
+    const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
+    if (!activeLeaf) return;
+
+    const file = activeLeaf.file;
+    if (!(file instanceof TFile)) return;
+
+    const content = await this.app.vault.read(file);
+		// ts-ignore
+		const filePath = path.join(this.app.vault.adapter.basePath, file.path);
+		this.config = await loadForFilePath(filePath);
+		this.tasks = await getTasks({ filePath, content });
+
+    // TODO Highlight TODO sections (Obsidian doesn't directly support decorations like VS Code)
+    // <!-- order:0 -->
+    // console.log("TODO sections found:", this.tasks);
+  }
+
+  openImdoneCard() {
+    const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
+    if (!activeLeaf) {
+      new Notice("No active markdown file.");
+      return;
+    }
+
+    const file = activeLeaf.file;
+    const lineNumber = this.getLineNumber();
+		if (!file || !this.isCursorInTask(lineNumber)) return;
+
+		// ts-ignore
+		const fullFilePath = path.join(this.app.vault.adapter.basePath, file.path);
+		// TODO Get imdoneUrl from imdone-core function instead of hardcoding
+		// <!-- order:-10 -->
+    const imdoneUrl = `imdone://card.select/${fullFilePath}?line=${lineNumber}`;
+    window.open(imdoneUrl);
+  }
+}
+
+export class ImdoneTagSuggester extends EditorSuggest<string> {
+  constructor(app: App, private plugin: ImdoneCompanionPlugin) {
+      super(app);
+      this.plugin = plugin;
 	}
 
-	getImdoneCardLinks(el: HTMLElement): Array<HTMLAnchorElement> {
-		const links = Array.from(el.querySelectorAll('.external-link')) as Array<HTMLAnchorElement>;
-		return links.filter(el => this.isImdoneCardLink(el));
+	get tagPrefix() {
+		return this.plugin.config.getTagPrefix();
 	}
 
-	updateCardLinksHref(el: HTMLElement) {
-		const links = this.getImdoneCardLinks(el);
-		links.forEach((link) => {
-			const { text, hash } = link;
-			link.href = this.getImdoneURL(text, hash, 'MARKDOWN');
-		})
-	}
+  // Define when to trigger suggestions
+  onTrigger(cursor: EditorPosition, editor: Editor, file: TFile | null): EditorSuggestTriggerInfo | null {
+      if (!file) return;
 
-	isImdoneCardHashtag(el: HTMLElement) {
-		return hashRegex.test(el.parentElement.getText());
-	}
+			const imdoneLine = this.plugin.getLineNumber();
+			const beforeCursor = editor.getRange({ line: cursor.line, ch: 0 }, cursor);
 
-	getImdoneCardHashtags(el: HTMLElement): Array<HTMLAnchorElement> {
-		const links = Array.from(el.querySelectorAll('a.tag[href^="#"]')) as Array<HTMLAnchorElement> 
-		return links.filter(el => this.isImdoneCardHashtag(el))
-	}
+			if (beforeCursor.endsWith(' ')) return;
 
-	makeCardHashtagsLinks(el: HTMLElement) {
-		this.getImdoneCardHashtags(el).forEach(el => {
-			const parent = el.parentElement;
-			const tag = el.innerText;
-			const text = parent.getText();
-			const hash = text.match(hashRegex)[0];
+			const regex = Task.getTagRegexp(this.tagPrefix);
+			const beforeCursorMatchResult = regex.exec(beforeCursor);
+			const isMatch = beforeCursorMatchResult || beforeCursor === this.tagPrefix;
 
-			parent.childNodes.forEach(node => {
-				if (node.nodeName === '#text') node.textContent = '';
-			});
+			if (isMatch && this.plugin.isCursorInTask(imdoneLine)) {
+				const query = beforeCursorMatchResult ? beforeCursorMatchResult[2] : '';
+				const index = beforeCursorMatchResult ? beforeCursorMatchResult.index : 0;
+				const triggerInfo = {
+						start: { line: cursor.line, ch: index },
+						end: cursor,
+						query,
+				};
+				return triggerInfo;
+			}
+  }
 
-			const imdoneLink = document.createElement('a');
-			const imdoneLinkText = text.replace(hash, '');
-			imdoneLink.setText(text.replace(tag, ''));
-			imdoneLink.href =  this.getImdoneURL(imdoneLinkText, hash, 'HASHTAG');
-			imdoneLink.addClass('external-link');
-			parent.append(imdoneLink);
-		});
-	}
+  // Render each suggestion in the dropdown
+  renderSuggestion(item: string, el: HTMLElement): void {
+      el.setText(item);
+  }
 
-	getImdoneURL(text: string, hash:string , type:'MARKDOWN' | 'HASHTAG') {
-		const path = this.getActiveFilePath().replace(/\\/g, '/');
-		return `imdone://${encodeURI(path)}?text=${encodeURIComponent(text.trim())}&hash=${encodeURIComponent(hash)}&type=${type}`;
-	}
+  // Fetch suggestions based on the query
+  async getSuggestions(context: EditorSuggestContext): Promise<string[]> {
+		console.log('context', context);
+		const file = this.app.workspace.getActiveFile();
+		console.log('file', file);
 
-	getActiveFilePath() {
-		const path = this.workspace.getActiveFile().path;
-		return this.adapter.getFullPath(path);
-	}
-
-	getActiveFileDir() {
-		return join(this.getVaultPath(), dirname(this.workspace.getActiveFile().path));
-	}
-
-	getVaultPath() {
-		return this.adapter.getBasePath();
-	}
-
-	async isVaultInImdoneProject() {
-		let cwd = this.getVaultPath();
-		while(true) {
-			const imdonePath = join(cwd, '.imdone');
-			if (await this.exists(imdonePath)) return !!imdonePath;
-			const dirNames = cwd.split(sep);
-			dirNames.pop();
-			cwd = dirNames.join(sep);
-			if (cwd === '') return;
-		}
-	}
-
-	isFileInImdoneProject(file: string) {
-		return this.inImdoneProject || this.imdonePaths.find(_path => {
-			return file.startsWith(_path);
-		});
-	}
-
-	async getImdoneProjectPaths():Promise<string[]> {
-		const cwd = this.getVaultPath();
-		return new Promise((resolve, reject) => {
-			dir(/\.imdone$/, cwd, dirs => {
-				resolve(dirs.map(dir => dir.replace(/\.imdone$/, '')));
-			}).error(reject);
-		});
-	}
-
-	async exists(_path: string):Promise<boolean> {
 		try {
-			const stats = await promises.stat(_path);
-			return stats && stats.isDirectory();
-		} catch {
-			return false;
+				// ts-ignore
+				const fullFilePath = path.join(this.app.vault.adapter.basePath, file.path);
+				const tags = (await getTags(fullFilePath))
+					.filter((tag: string) => tag.startsWith(context.query))
+					.map((tag: string) => `${tag}`);
+				return tags;
+		} catch (error) {
+				console.error('Error fetching tags:', error);
+				return [];
 		}
-	}
+}
+
+// Handle selection of a suggestion
+  selectSuggestion(item: string, evt: MouseEvent | KeyboardEvent): void {
+      this.close();
+
+      const editor = this.app.workspace.activeEditor?.editor;
+
+      if (!editor) return;
+
+      const cursor = editor.getCursor();
+      const line = editor.getLine(cursor.line);
+
+      const lastHashIndex = line.lastIndexOf(this.tagPrefix, cursor.ch);
+      if (lastHashIndex !== -1) {
+          const beforeTag = line.slice(0, lastHashIndex + 1);
+          const afterTag = line.slice(cursor.ch);
+
+          editor.replaceRange(`${beforeTag}${item}${afterTag}`, { line: cursor.line, ch: 0 }, { line: cursor.line, ch: line.length });
+      }
+  }
 }
