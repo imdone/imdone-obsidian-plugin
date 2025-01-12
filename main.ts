@@ -111,6 +111,7 @@ export default class ImdoneCompanionPlugin extends Plugin {
 		// ts-ignore
 		const fullFilePath = path.join(this.app.vault.adapter.basePath, file.path);
 		// TODO Get imdoneUrl from imdone-core function instead of hardcoding
+		// - [Add a function that returns the imdone url](imdone://card.select//Users/jesse/projects/imdone-projects/imdone-core?sid=wmr_a0ikOY39kInkmudPa)
 		// <!-- order:-10 -->
     const imdoneUrl = `imdone://card.select/${fullFilePath}?line=${lineNumber}`;
     window.open(imdoneUrl);

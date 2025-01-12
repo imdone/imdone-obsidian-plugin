@@ -40,8 +40,8 @@ lists:
     id: sktwi16g7m5skwr7u
 settings:
   openIn: code
-  journalType: Folder
-  journalPath: imdone-obsidian-plugin-notes
+  journalType: New File
+  journalPath: backlog
   appendNewCardsTo: my-journal.md
   newCardSyntax: MARKDOWN
   replaceSpacesWith: '-'
@@ -65,8 +65,8 @@ settings:
       created:${(new Date()).toISOString()}
       -->
     trackChanges: false
-    metaNewLine: false
-    addCompletedMeta: false
+    metaNewLine: true
+    addCompletedMeta: true
     addCheckBoxTasks: false
     doneList: DONE
     tokenPrefix: '#'
@@ -79,4 +79,4 @@ settings:
     showTagsAndMeta: true
     defaultList: TODO
     archiveCompleted: true
-    archiveFolder: imdone-obsidian-plugin-notes/archive
+    archiveFolder: backlog/archive
