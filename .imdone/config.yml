@@ -39,7 +39,7 @@ lists:
     ignore: false
     id: sktwi16g7m5skwr7u
 settings:
-  openIn: code
+  openIn: obsidian
   journalType: New File
   journalPath: backlog
   appendNewCardsTo: my-journal.md
@@ -80,3 +80,4 @@ settings:
     defaultList: TODO
     archiveCompleted: true
     archiveFolder: backlog/archive
+  openToLine: false

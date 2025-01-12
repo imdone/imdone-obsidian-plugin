@@ -1,4 +1,4 @@
-import { Plugin, TFile, MarkdownView, EditorSuggest, EditorSuggestContext, App, EditorPosition, Editor, EditorSuggestTriggerInfo, PluginManifest } from "obsidian";
+import { Plugin, TFile, MarkdownView, EditorSuggest, EditorSuggestContext, App, EditorPosition, Editor, EditorSuggestTriggerInfo, PluginManifest, ObsidianProtocolData } from "obsidian";
 import path from "path";
 // @ts-ignore
 import { getTasks } from "imdone-core/lib/usecases/get-tasks-in-file";
@@ -24,7 +24,38 @@ export default class ImdoneCompanionPlugin extends Plugin {
   async onload() {
     console.log("Loading Imdone Companion Plugin");
 
-		this.config = await loadForFilePath(this.app.vault.adapter.basePath);
+		// @ts-ignore
+		this.config = await loadForFilePath(this.basePath);
+		const actionName = 'open-to-line';
+		
+		this.registerObsidianProtocolHandler('open-to-line', async (params: ObsidianProtocolData) => {
+
+			if (params.action === actionName && params.path) {
+				const file = params.path.replace(/\\/g, '/').replace(this.basePath, '');
+
+				try {
+					await this.app.workspace.openLinkText(file, '', false, { state: { mode: 'source' } });
+					const cmEditor = this.getEditor();
+					if (!cmEditor) {
+						console.error('Editor not found');
+						return;
+					}
+
+					if (params.line) {
+						const lineNumber = parseInt(params.line, 10);
+						cmEditor.setCursor(lineNumber, 0);
+						cmEditor.scrollIntoView(null, 200);
+					}
+
+					cmEditor.focus();
+				} catch (error) {
+					console.error('Error opening file or setting cursor:', error);
+				}
+			} else {
+				console.warn('Invalid action or path:', params.action, params.path);
+			}
+		});
+
     this.addCommand({
       id: "open-imdone-card",
       name: "Open Imdone Card",
@@ -49,6 +80,18 @@ export default class ImdoneCompanionPlugin extends Plugin {
 		// @ts-ignore
 		this.app.workspace.editorSuggest.suggests.unshift(this.tagSuggester);
   }
+	
+	get basePath() {
+		// @ts-ignore
+		return this.app.vault.adapter.basePath;
+	}
+
+	getEditor() {
+		const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+		if (!markdownView) return;
+		const cmEditor = markdownView.sourceMode.cmEditor;
+		return cmEditor;
+	}
 
   onunload() {
     console.log("Unloading Imdone Companion Plugin");
@@ -88,7 +131,7 @@ export default class ImdoneCompanionPlugin extends Plugin {
 
     const content = await this.app.vault.read(file);
 		// ts-ignore
-		const filePath = path.join(this.app.vault.adapter.basePath, file.path);
+		const filePath = path.join(this.basePath, file.path);
 		this.config = await loadForFilePath(filePath);
 		this.tasks = await getTasks({ filePath, content });
 
@@ -109,7 +152,7 @@ export default class ImdoneCompanionPlugin extends Plugin {
 		if (!file || !this.isCursorInTask(lineNumber)) return;
 
 		// ts-ignore
-		const fullFilePath = path.join(this.app.vault.adapter.basePath, file.path);
+		const fullFilePath = path.join(this.basePath, file.path);
 		// TODO Get imdoneUrl from imdone-core function instead of hardcoding
 		// - [Add a function that returns the imdone url](imdone://card.select//Users/jesse/projects/imdone-projects/imdone-core?sid=wmr_a0ikOY39kInkmudPa)
 		// <!-- order:-10 -->
@@ -166,7 +209,7 @@ export class ImdoneTagSuggester extends EditorSuggest<string> {
 
 		try {
 				// ts-ignore
-				const fullFilePath = path.join(this.app.vault.adapter.basePath, file.path);
+				const fullFilePath = path.join(this.basePath, file.path);
 				const tags = (await getTags(fullFilePath))
 					.filter((tag: string) => tag.startsWith(context.query))
 					.map((tag: string) => `${tag}`);
