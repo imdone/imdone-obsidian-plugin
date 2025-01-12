@@ -28,7 +28,7 @@ export default class ImdoneCompanionPlugin extends Plugin {
 		this.config = await loadForFilePath(this.basePath);
 		const actionName = 'open-to-line';
 		
-		this.registerObsidianProtocolHandler('open-to-line', async (params: ObsidianProtocolData) => {
+		this.registerObsidianProtocolHandler(actionName, async (params: ObsidianProtocolData) => {
 
 			if (params.action === actionName && params.path) {
 				const file = params.path.replace(/\\/g, '/').replace(this.basePath, '');
@@ -171,6 +171,10 @@ export class ImdoneTagSuggester extends EditorSuggest<string> {
 		return this.plugin.config.getTagPrefix();
 	}
 
+	get basePath() {
+		return this.plugin.basePath;
+	}
+
   // Define when to trigger suggestions
   onTrigger(cursor: EditorPosition, editor: Editor, file: TFile | null): EditorSuggestTriggerInfo | null {
       if (!file) return;
@@ -203,9 +207,7 @@ export class ImdoneTagSuggester extends EditorSuggest<string> {
 
   // Fetch suggestions based on the query
   async getSuggestions(context: EditorSuggestContext): Promise<string[]> {
-		console.log('context', context);
 		const file = this.app.workspace.getActiveFile();
-		console.log('file', file);
 
 		try {
 				// ts-ignore
