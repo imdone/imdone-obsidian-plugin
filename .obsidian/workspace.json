@@ -1,0 +1,169 @@
+{
+  "main": {
+    "id": "ceae68fc01f7ac59",
+    "type": "split",
+    "children": [
+      {
+        "id": "318c3e5bad4f4f1d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5b443eb4d37551ba",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "backlog/Publish-the-latest-release.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Publish-the-latest-release"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "84a058b1d59ec04b",
+    "type": "split",
+    "children": [
+      {
+        "id": "3e9e2f2afb40a4f9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "51d02f31d8b7c76d",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "a5951b364aef1f01",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "671b5e90df396df8",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "18344975501df376",
+    "type": "split",
+    "children": [
+      {
+        "id": "139ae830be156a99",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e057bcffea8ed6c5",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "backlog/Publish-the-latest-release.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Publish-the-latest-release"
+            }
+          },
+          {
+            "id": "7e637cceff40eb70",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "backlog/Publish-the-latest-release.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Publish-the-latest-release"
+            }
+          },
+          {
+            "id": "3b9a3b00b79dc58b",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "a909d1ccf2c0b28a",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "backlog/Publish-the-latest-release.md"
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Publish-the-latest-release"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "5b443eb4d37551ba",
+  "lastOpenFiles": [
+    "backlog/README.md"
+  ]
+}

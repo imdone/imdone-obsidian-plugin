@@ -1,4 +1,3 @@
-keepEmptyPriority: false
 code:
   include_lists:
     - TODO
@@ -16,88 +15,69 @@ code:
 lists:
   - filter: 'dueDate < "${tomorrow at 6AM}" AND list != DONE +dueDate +order'
     hidden: true
-    id: 0
+    id: sktwi16g7m5skwq80
     name: What's Due?
   - hidden: false
     name: NOTE
+    id: sktwi16g7m5skwq81
   - hidden: false
     name: TODO
+    id: sktwi16g7m5skwq82
   - hidden: false
     name: DOING
+    id: sktwi16g7m5skwq83
   - hidden: false
     ignore: true
     name: DONE
+    id: sktwi16g7m5skwq84
   - filter: 'completedDate > "${7 days ago}" -completed'
     hidden: false
-    id: 1
+    id: sktwi16g7m5skwq85
     name: Recently Completed
+  - name: FIXME
+    hidden: false
+    ignore: false
+    id: sktwi16g7m5skwr7u
 settings:
-  journalType: Folder
-  journalPath: imdone-obsidian-plugin-notes
-  taskPrefix: '#'
-  maxLines: 6
-  addNewCardsToTop: true
+  openIn: obsidian
+  journalType: New File
+  journalPath: backlog
+  appendNewCardsTo: my-journal.md
   newCardSyntax: MARKDOWN
-  openIn: code
+  replaceSpacesWith: '-'
+  plugins:
+    HeaderFooterPlugin:
+      afterPrefix: '${!/.md$/.test(relPath) ? ''## **:hammer_and_wrench:** '' : ''''}'
+    devMode: false
+  journalTemplate: null
+  markdownOnly: false
   editorTheme: blackboard
+  theme: dark
+  useVimKeyBindings: false
+  views: []
+  name: imdone-obsidian-plugin
+  kudosProbability: 0.33
   cards:
     colors: []
-    computed:
-      date: '${(new Date()).toDateString()}'
-      time: '${(new Date()).toLocaleTimeString()}'
-      timestamp: '${(new Date()).toISOString()}'
-      sourceLink: '[${source.path}:${line}](${source.path}:${line})'
-      dueEmoji: !<tag:yaml.org,2002:js/function> |-
-        function anonymous(
-        ) {
-        const due = this.totals["What's Due?"]
-          let emoji = ':2nd_place_medal:'
-          if (due >= 3) {
-            emoji = ':fire:'
-          } else if (due === 0) {
-            emoji = ':rocket:'
-          }
-          return `<span style="font-size: 1.5em;">${emoji}</span>`
-        }
-      recentEmoji: !<tag:yaml.org,2002:js/function> |-
-        function anonymous(
-        ) {
-        const recentlyCompleted = this.totals["Recently Completed"]
-          let emoji = ':2nd_place_medal:'
-          if (recentlyCompleted >= 3) {
-            emoji = ':rocket:'
-          } else if (recentlyCompleted === 0) {
-            emoji = ':fire:'
-          }
-          return `<span style="font-size: 1.5em;">${emoji}</span>`
-        }
-      wipEmoji: !<tag:yaml.org,2002:js/function> |-
-        function anonymous(
-        ) {
-        const doing = this.totals["DOING"]
-          let emoji = ':2nd_place_medal:'
-          if (doing >= 3) {
-            emoji = ':fire:'
-          } else if (doing === 0) {
-            emoji = ':sleeping:'
-          } else if (doing === 1) {
-            emoji = ':rocket:'
-          }
-          return `<span style="font-size: 1.5em;">${emoji}</span>`
-        }
     template: |
 
       <!--
       created:${(new Date()).toISOString()}
       -->
-  filteredLists:
-    - filter: 'dueDate < "${tomorrow at 6AM}" AND list != DONE +dueDate +order'
-      name: What's Due?
-    - filter: 'completedDate > "${7 days ago}" -completed'
-      name: Recently Completed
-  replaceSpacesWith: '-'
-  journalTemplate: null
-  appendNewCardsTo: my-journal.md
-  theme: dark
-  useVimKeyBindings: false
-  doneList: DONE
+    trackChanges: false
+    metaNewLine: true
+    addCompletedMeta: true
+    addCheckBoxTasks: false
+    doneList: DONE
+    tokenPrefix: '#'
+    taskPrefix: '#'
+    tagPrefix: '#'
+    metaSep: ':'
+    orderMeta: true
+    maxLines: 6
+    addNewCardsToTop: true
+    showTagsAndMeta: true
+    defaultList: TODO
+    archiveCompleted: true
+    archiveFolder: backlog/archive
+  openToLine: false
