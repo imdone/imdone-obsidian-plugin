@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "318c3e5bad4f4f1d",
+        "id": "ca7e83f099105c2d",
         "type": "tabs",
         "children": [
           {
-            "id": "5b443eb4d37551ba",
+            "id": "09cfd881fdd0e07c",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -162,8 +162,9 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "5b443eb4d37551ba",
+  "active": "09cfd881fdd0e07c",
   "lastOpenFiles": [
+    "backlog/Publish-the-latest-release.md",
     "backlog/README.md"
   ]
 }

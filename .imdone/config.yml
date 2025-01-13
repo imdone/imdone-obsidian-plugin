@@ -43,7 +43,7 @@ settings:
   journalType: New File
   journalPath: backlog
   appendNewCardsTo: my-journal.md
-  newCardSyntax: MARKDOWN
+  newCardSyntax: HASHTAG
   replaceSpacesWith: '-'
   plugins:
     HeaderFooterPlugin:
@@ -80,4 +80,4 @@ settings:
     defaultList: TODO
     archiveCompleted: true
     archiveFolder: backlog/archive
-  openToLine: false
+  openToLine: true
