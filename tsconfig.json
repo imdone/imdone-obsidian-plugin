@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types" : ["find", "node"],
+    "types" : ["node"],
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "baseUrl": ".",

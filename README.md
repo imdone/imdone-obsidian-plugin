@@ -22,3 +22,9 @@ This command works in any file that contains Imdone-compatible `TODO` comments, 
 
 - **Imdone**: Make sure Imdone is installed and configured to manage your project's `TODO` comments. Learn more at [Imdone.io](https://imdone.io).
 
+## Changelog
+
+### 1.0.3
+
+- Fix open in obsidian to Line on windows
+

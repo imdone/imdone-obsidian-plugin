@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "ca7e83f099105c2d",
+        "id": "b2e8a40bc235f906",
         "type": "tabs",
         "children": [
           {
-            "id": "09cfd881fdd0e07c",
+            "id": "1ce005203aad7f14",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -162,9 +162,43 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "09cfd881fdd0e07c",
+  "active": "1ce005203aad7f14",
   "lastOpenFiles": [
     "backlog/Publish-the-latest-release.md",
-    "backlog/README.md"
+    "node_modules/imdone-core/tmp/repos/move-meta-order/file-1.md",
+    "node_modules/imdone-core/tmp/repos/meta-sep-test/file2.md",
+    "node_modules/imdone-core/tmp/repos/files/hash-no-order.md",
+    "node_modules/imdone-core/tmp/repos/files/update-metadata.md",
+    "node_modules/imdone-core/tmp/repos/files/test.js",
+    "node_modules/imdone-core/tmp/repos/files/sample.md",
+    "node_modules/imdone-core/tmp/repos/files/sample.js",
+    "node_modules/imdone-core/tmp/repos/files/preserve-blank-lines.md",
+    "node_modules/imdone-core/tmp/repos/files/move-tasks.md",
+    "node_modules/imdone-core/tmp/repos/files/modify-tasks.md",
+    "node_modules/imdone-core/tmp/repos/files/imdone-readme-metaSep.md",
+    "node_modules/imdone-core/tmp/repos/files/imdone-readme-default-metaSep.md",
+    "node_modules/imdone-core/tmp/repos/files/descriptions.js",
+    "node_modules/imdone-core/tmp/repos/files/checkbox-tasks.md",
+    "node_modules/imdone-core/tmp/repos/files/checkbox-deletions.md",
+    "node_modules/imdone-core/tmp/repos/files",
+    "node_modules/imdone-core/tmp/repos/default-cards/imdone-readme.md",
+    "node_modules/imdone-core/tmp/repos/code-blocks/readme.md",
+    "node_modules/imdone-core/tmp/repos/repo3/addTaskTest.md",
+    "node_modules/imdone-core/tmp/repos/repo2/sample.md",
+    "node_modules/imdone-core/tmp/repos/repo1/sample.md",
+    "node_modules/imdone-core/tmp/repos/no-order-repo/file-2.md",
+    "node_modules/imdone-core/tmp/repos/repo3/addTaskTestNew.md",
+    "node_modules/imdone-core/tmp/repos/meta-sep-test/file1.md",
+    "node_modules/imdone-core/tmp/repos/default-cards-metaSep/imdone-readme.md",
+    "node_modules/imdone-core/tmp/repos/repo3/KillSurvivorCommandHandler.cs",
+    "node_modules/imdone-core/tmp/repos/repo3/lists.md",
+    "node_modules/imdone-core/tmp/repos/move-meta-order",
+    "node_modules/imdone-core/tmp/repos/repo3/deletions.md",
+    "node_modules/imdone-core/tmp/repos/files/reADmE.Md",
+    "node_modules/imdone-core/tmp/repos/files/hOmE.Md",
+    "node_modules/imdone-core/tmp/tmp-repo-1",
+    "node_modules/imdone-core/tmp/order-integrity",
+    "node_modules/imdone-core/tmp/repos/repo2/testdir/testdir2/test.js",
+    "node_modules/imdone-core/tmp/repos/repo2/testdir/testdir2"
   ]
 }
