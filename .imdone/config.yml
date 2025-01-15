@@ -1,3 +1,4 @@
+keepEmptyPriority: false
 code:
   include_lists:
     - TODO
@@ -40,6 +41,7 @@ lists:
     id: sktwi16g7m5skwr7u
 settings:
   openIn: obsidian
+  openCodeIn: code
   journalType: New File
   journalPath: backlog
   appendNewCardsTo: my-journal.md
@@ -57,6 +59,7 @@ settings:
   views: []
   name: imdone-obsidian-plugin
   kudosProbability: 0.33
+  openToLine: true
   cards:
     colors: []
     template: |
@@ -76,8 +79,7 @@ settings:
     orderMeta: true
     maxLines: 6
     addNewCardsToTop: true
-    showTagsAndMeta: true
+    showTagsAndMeta: false
     defaultList: TODO
     archiveCompleted: true
     archiveFolder: backlog/archive
-  openToLine: true

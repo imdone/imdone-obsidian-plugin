@@ -6,6 +6,7 @@ import { getTasks } from "imdone-core/lib/usecases/get-tasks-in-file";
 import { getTags } from "imdone-core/lib/usecases/get-project-tags";
 // @ts-ignore
 import Task from "imdone-core/lib/task";
+// @ts-ignore
 import { loadForFilePath } from "imdone-core/lib/adapters/storage/config";
 // @ts-ignore
 import Config from "imdone-core/lib/config";
@@ -31,7 +32,8 @@ export default class ImdoneCompanionPlugin extends Plugin {
 		this.registerObsidianProtocolHandler(actionName, async (params: ObsidianProtocolData) => {
 
 			if (params.action === actionName && params.path) {
-				const file = params.path.replace(/\\/g, '/').replace(this.basePath, '');
+				const basePath = this.basePath.replace(/\\/g, '/');
+				const file = params.path.replace(/\\/g, '/').replace(basePath, '');
 
 				try {
 					await this.app.workspace.openLinkText(file, '', false, { state: { mode: 'source' } });
@@ -89,6 +91,7 @@ export default class ImdoneCompanionPlugin extends Plugin {
 	getEditor() {
 		const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
 		if (!markdownView) return;
+		// @ts-ignore
 		const cmEditor = markdownView.sourceMode.cmEditor;
 		return cmEditor;
 	}
@@ -143,6 +146,7 @@ export default class ImdoneCompanionPlugin extends Plugin {
   openImdoneCard() {
     const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
     if (!activeLeaf) {
+			// @ts-ignore
       new Notice("No active markdown file.");
       return;
     }
