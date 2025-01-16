@@ -24,6 +24,10 @@ This command works in any file that contains Imdone-compatible `TODO` comments, 
 
 ## Changelog
 
+### 1.0.4
+
+- Switched to `Ctrl+Shift+I` to avoid conflicts with other plugins and align with  Imdone code companion for VS Code
+
 ### 1.0.3
 
 - Fix open in obsidian to Line on windows
