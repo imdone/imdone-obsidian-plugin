@@ -63,7 +63,7 @@ export default class ImdoneCompanionPlugin extends Plugin {
       name: "Open Imdone Card",
 			hotkeys: [
         {
-            modifiers: ['Ctrl'],
+            modifiers: ['Ctrl','Shift'],
             key: 'I',
         },
     	],
