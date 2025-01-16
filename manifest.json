@@ -1,7 +1,7 @@
 {
 	"id": "imdone-obsidian-plugin",
 	"name": "Open cards in imdone",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"minAppVersion": "1.7.2",
 	"description": "This plugin allows imdone users to open their imdone board from a document in their obsidian vault that contains imdone cards.",
 	"author": "Imdone",
