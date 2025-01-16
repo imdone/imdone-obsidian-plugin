@@ -164,6 +164,9 @@
   },
   "active": "1ce005203aad7f14",
   "lastOpenFiles": [
+    "backlog/archive/backlog/Make-the-the-shortcut-Ctrl+Shift+I.md",
+    "backlog/archive/backlog",
+    "backlog/Make-the-the-shortcut-Ctrl+Shift+I.md",
     "backlog/Publish-the-latest-release.md",
     "node_modules/imdone-core/tmp/repos/move-meta-order/file-1.md",
     "node_modules/imdone-core/tmp/repos/meta-sep-test/file2.md",
@@ -194,11 +197,8 @@
     "node_modules/imdone-core/tmp/repos/repo3/lists.md",
     "node_modules/imdone-core/tmp/repos/move-meta-order",
     "node_modules/imdone-core/tmp/repos/repo3/deletions.md",
-    "node_modules/imdone-core/tmp/repos/files/reADmE.Md",
-    "node_modules/imdone-core/tmp/repos/files/hOmE.Md",
     "node_modules/imdone-core/tmp/tmp-repo-1",
     "node_modules/imdone-core/tmp/order-integrity",
-    "node_modules/imdone-core/tmp/repos/repo2/testdir/testdir2/test.js",
-    "node_modules/imdone-core/tmp/repos/repo2/testdir/testdir2"
+    "node_modules/imdone-core/tmp/repos/repo2/testdir/testdir2/test.js"
   ]
 }
