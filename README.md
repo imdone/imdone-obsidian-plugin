@@ -10,7 +10,7 @@ Works with imdone 1.50.0 and later.
 
 ## Features
 
-- **Open Imdone Card with Keyboard Shortcut**: Place your cursor inside a `TODO` comment and press `Ctrl+I` to open Imdone directly to the card.
+- **Open Imdone Card with Keyboard Shortcut**: Place your cursor inside a `TODO` comment and press `Ctrl+Shift+I` to open Imdone directly to the card.
 - **Efficient Card Location Detection**: Automatically gathers the active file path and line number, generating a link to open Imdone at the exact location.
 - **Autocomplete for `#imdone` Tags**: Provides autocomplete suggestions for `#imdone` tags as you type, making it easier to add and manage tasks.
 
