@@ -4,6 +4,8 @@
 
 This plugin provides a seamless way to open Imdone directly to the specific card the cursor is currently in, right from Obsidian.
 
+IMPORTANT: Restart obsidian after installing and enabling the plugin for the hotkey to be registered.
+
 Imdone will open obsidian to the card source in edit mode if **Open obsidian at card source line** is switched on in your board settings.
 
 Works with imdone 1.50.0 and later.
@@ -31,4 +33,18 @@ This command works in any file that contains Imdone-compatible `TODO` comments, 
 ### 1.0.3
 
 - Fix open in obsidian to Line on windows
+
+%% 
+# #TODO Add comparison to kanban plugin
+
+- [ ] Imdone helps keep you in context because cards can be in any files and you can jump right to the card source from the imdone board
+- [ ] Add setup instructions
+
+<!--
+created:2025-01-20T17:21:10.756Z
+order:-30
+-->
+
+
+ %%
 

@@ -61,6 +61,10 @@ export default class ImdoneCompanionPlugin extends Plugin {
     this.addCommand({
       id: "open-imdone-card",
       name: "Open Imdone Card",
+			// TODO Don't set hotkeys
+			// <!--
+			// order:-40
+			// -->
 			hotkeys: [
         {
             modifiers: ['Ctrl','Shift'],
