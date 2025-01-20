@@ -13,6 +13,7 @@ code:
     - IDEA
     - NOTE
     - REVIEW
+    - READY
 lists:
   - filter: 'dueDate < "${tomorrow at 6AM}" AND list != DONE +dueDate +order'
     hidden: true
@@ -27,6 +28,10 @@ lists:
   - hidden: false
     name: DOING
     id: sktwi16g7m5skwq83
+  - name: READY
+    hidden: false
+    ignore: false
+    id: sktwifc2m65m68lz
   - hidden: false
     ignore: true
     name: DONE

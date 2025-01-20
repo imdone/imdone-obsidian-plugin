@@ -46,7 +46,21 @@ export default class ImdoneCompanionPlugin extends Plugin {
 					if (params.line) {
 						const lineNumber = parseInt(params.line, 10);
 						cmEditor.setCursor(lineNumber, 0);
-						cmEditor.scrollIntoView(null, 200);
+						// READY Fix scroll to line
+						// <!--
+						// order:0
+						// -->
+						const editorRange = {
+							from: {
+								line: lineNumber,
+								ch: 0
+							},
+							to: {
+								line: lineNumber + 1,
+								ch: 0
+							}
+						}
+						cmEditor.scrollIntoView(editorRange, true);
 					}
 
 					cmEditor.focus();
@@ -61,16 +75,6 @@ export default class ImdoneCompanionPlugin extends Plugin {
     this.addCommand({
       id: "open-imdone-card",
       name: "Open Imdone Card",
-			// TODO Don't set hotkeys
-			// <!--
-			// order:-40
-			// -->
-			hotkeys: [
-        {
-            modifiers: ['Ctrl','Shift'],
-            key: 'I',
-        },
-    	],
       checkCallback: (checking) => {
         if (checking) return this.app.workspace.activeLeaf?.getViewState().type === "markdown";
         this.openImdoneCard();
