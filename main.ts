@@ -75,11 +75,24 @@ export default class ImdoneCompanionPlugin extends Plugin {
     this.addCommand({
       id: "open-imdone-card",
       name: "Open Imdone Card",
+			// READY Don't set hotkeys
+			// <!--
+			// order:-10
+			// -->
       checkCallback: (checking) => {
         if (checking) return this.app.workspace.activeLeaf?.getViewState().type === "markdown";
         this.openImdoneCard();
       },
     });
+
+		this.addCommand({
+			id: "refresh-todo-sections",
+			name: "Refresh TODO Sections",
+			checkCallback: (checking) => {
+				if (checking) return this.app.workspace.activeLeaf?.getViewState().type === "markdown";
+				this.refreshTodoSections();
+			},
+		});
 
     // Register event listeners
     this.registerEvent(this.app.workspace.on("active-leaf-change", this.refreshTodoSections.bind(this)));
@@ -147,9 +160,26 @@ export default class ImdoneCompanionPlugin extends Plugin {
 		this.tasks = await getTasks({ filePath, content });
 
     // TODO Highlight TODO sections (Obsidian doesn't directly support decorations like VS Code)
+    // [example in CM 6](https://tinyurl.com/yk7zv6km)
     // <!-- order:0 -->
-    // console.log("TODO sections found:", this.tasks);
+
+		this.tasks.forEach((task: any) => {
+			this.highlightTask(task);
+		});
+	}
+
+	highlightTask(task: any) {
+		const editor = this.getEditor();
+		if (!editor) return;
+		for (let i = task.line; i <= task.lastLine; i++) {
+			this.highlightLine(i, editor);
+		}
+		
   }
+
+	highlightLine(line: number, editor: any) {
+		// editor.addLineClass(line, "background", "highlighted-line");
+	}
 
   openImdoneCard() {
     const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
