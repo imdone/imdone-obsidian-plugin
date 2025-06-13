@@ -62,7 +62,7 @@ settings:
   theme: dark
   useVimKeyBindings: false
   views: []
-  name: imdone-obsidian-plugin
+  name: "\U0001FAA8 imdone-obsidian-plugin"
   kudosProbability: 0.33
   openToLine: true
   cards:
@@ -76,6 +76,7 @@ settings:
     metaNewLine: true
     addCompletedMeta: true
     addCheckBoxTasks: false
+    doingList: FIXME
     doneList: DONE
     tokenPrefix: '#'
     taskPrefix: '#'
